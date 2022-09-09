@@ -911,6 +911,9 @@ def is_truthy(obj: Any) -> bool:
     if isinstance(obj, int) and not isinstance(obj, bool):
         return True
 
+    if isinstance(obj, float) and not isinstance(obj, bool):
+        return True
+
     if obj in (False, None):
         return False
     return True
