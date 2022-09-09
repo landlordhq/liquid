@@ -1,0 +1,3 @@
+[repositories]
+[repositories.steadily]
+url = "https://steadily.jfrog.io/artifactory/api/pypi/steadily-pypi"

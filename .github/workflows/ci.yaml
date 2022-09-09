@@ -1,0 +1,37 @@
+name: ci
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # install binaries
+      - uses: extractions/setup-just@v1
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.9.x"
+      - uses: actions/checkout@v2
+
+      # setup python caching and install packages
+      - name: Cache python
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.cache/pypoetry
+          key: v2-${{ runner.os }}-python-${{ hashFiles('poetry.lock') }}
+          restore-keys: |
+            v2-${{ runner.os }}-python-
+            v2-${{ runner.os }}-
+      - name: Install dependencies
+        env:
+          POETRY_VIRTUALENVS_CREATE: false
+        run: |
+          pip install poetry
+          poetry config http-basic.steadily github ${{ secrets.JFROG_GITHUB_PASSWORD }}
+          poetry install
+
+      # run tests
+      - name: test
+        run: just test
